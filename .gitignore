@@ -1,0 +1,21 @@
+# Python & Virtual Environments
+__pycache__/
+*.py[cod]
+venv/
+.venv/
+.env
+
+# Data & Large Archives
+data/
+*.zip
+*.tar.gz
+*.csv
+
+# Docker & Logs
+*.log
+logs/
+
+# IDE / OS
+.DS_Store
+.vscode/
+.idea/
