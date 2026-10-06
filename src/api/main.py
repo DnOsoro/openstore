@@ -22,6 +22,9 @@ app = FastAPI(title="OpenStore AI Analytics API")
 origins = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
+    "https://openstore-delta.vercel.app",
+    "https://openstore-git-main-chanai.vercel.app",
+    "*"
 ]
 
 app.add_middleware(
@@ -36,6 +39,10 @@ app.add_middleware(
 class QueryRequest(BaseModel):
     prompt: str
 
+
+@app.get("/")
+def read_root():
+    return {"status": "ok", "message": "OpenStore AI Analytics API is live"}
 
 @app.post("/api/v1/ai-query")
 async def ai_query(request: QueryRequest):
