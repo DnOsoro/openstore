@@ -19,7 +19,11 @@ export default function Home() {
 
   const fetchMonthlyRevenue = async () => {
     try {
-      const res = await fetch(`${API_URL}/api/v1/analytics/monthly-revenue`);
+      const res = await fetch(`${API_URL}/api/v1/analytics/monthly-revenue`, {
+        headers: {
+          "ngrok-skip-browser-warning": "true",
+        },
+      });
       if (res.ok) {
         const json = await res.json();
         setMonthlyData(json.data || []);
@@ -40,7 +44,10 @@ export default function Home() {
     try {
       const res = await fetch(`${API_URL}/api/v1/ai-query`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "ngrok-skip-browser-warning": "true",
+        },
         body: JSON.stringify({ prompt }),
       });
 
