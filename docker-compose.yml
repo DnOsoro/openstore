@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  # --- RAW LAKE: SeaweedFS (Master + Volume + S3 Gateway) ---
+  seaweedfs:
+    image: chrislusf/seaweedfs:latest
+    container_name: openstore_seaweedfs
+    ports:
+      - "9333:9333"   # Master Server
+      - "8080:8080"   # Volume Server
+      - "8333:8333"   # S3 Gateway API
+    command: "server -s3 -dir=/data"
+    volumes:
+      - seaweedfs_data:/data
+    restart: always
+
+  # --- DATA WAREHOUSE: PostgreSQL ---
+  postgres:
+    image: postgres:15-alpine
+    container_name: openstore_postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-openstore_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-openstore_pass}
+      POSTGRES_DB: ${POSTGRES_DB:-openstore_db}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: always
+
+volumes:
+  seaweedfs_data:
+  postgres_data:

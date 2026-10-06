@@ -19,3 +19,9 @@ logs/
 .DS_Store
 .vscode/
 .idea/
+.env
+.env.local
+venv/
+__pycache__/
+.next/
+node_modules/
