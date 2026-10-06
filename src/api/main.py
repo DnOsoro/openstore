@@ -1,3 +1,15 @@
+from dotenv import load_dotenv
+import os
+load_dotenv()
+
+import os
+from sqlalchemy import create_engine, text
+
+DATABASE_URL = os.getenv('DATABASE_URL', 'postgresql+psycopg2://openstore_user:openstore_pass@localhost:5432/openstore_db')
+if DATABASE_URL.startswith('postgresql://'):
+    DATABASE_URL = DATABASE_URL.replace('postgresql://', 'postgresql+psycopg2://', 1)
+engine = create_engine(DATABASE_URL)
+
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -66,3 +78,15 @@ async def get_monthly_revenue():
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("src.api.main:app", host="0.0.0.0", port=8000, reload=True)
+
+@app.get("/api/v1/analytics/delivery-performance")
+def get_delivery_performance():
+    with engine.connect() as conn:
+        result = conn.execute(text("SELECT * FROM analytics.delivery_performance")).mappings().all()
+        return {"status": "success", "data": [dict(row) for row in result]}
+
+@app.get("/api/v1/analytics/location-revenue")
+def get_location_revenue():
+    with engine.connect() as conn:
+        result = conn.execute(text("SELECT * FROM analytics.revenue_by_location")).mappings().all()
+        return {"status": "success", "data": [dict(row) for row in result]}
