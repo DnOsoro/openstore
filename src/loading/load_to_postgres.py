@@ -14,14 +14,18 @@ AWS_KEY = os.getenv("AWS_ACCESS_KEY_ID", "openstore_key")
 AWS_SECRET = os.getenv("AWS_SECRET_ACCESS_KEY", "openstore_secret")
 BUCKET_NAME = os.getenv("S3_BUCKET_NAME", "olist-raw")
 
-DB_USER = os.getenv("POSTGRES_USER", "openstore_user")
-DB_PASS = os.getenv("POSTGRES_PASSWORD", "openstore_pass")
-DB_HOST = os.getenv("POSTGRES_HOST", "localhost")
-DB_PORT = os.getenv("POSTGRES_PORT", "5432")
-DB_NAME = os.getenv("POSTGRES_DB", "openstore_db")
+DATABASE_URL = os.getenv("DATABASE_URL")
+if not DATABASE_URL:
+    raise RuntimeError("DATABASE_URL is not set")
 
-DB_URL = f"postgresql+psycopg2://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
-engine = create_engine(DB_URL)
+if DATABASE_URL.startswith("postgresql://"):
+    DATABASE_URL = DATABASE_URL.replace(
+        "postgresql://",
+        "postgresql+psycopg2://",
+        1
+    )
+
+engine = create_engine(DATABASE_URL)
 
 def get_s3_client():
     return boto3.client(
